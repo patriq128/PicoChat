@@ -2,6 +2,9 @@
 # Sending Love :3
 
 import time
+import json
+import os
+import sys
 
 def booting_page():
     print("\033[2J\033[H", end="")
@@ -23,19 +26,20 @@ def booting_page():
     print("Enjoy your free will")
     input("Press enter to continue...")
 
-def connecting():
-    for _ in range(3):
-        for i in range(4):
-            print("\rConnecting" + "." * i + "   ", end="", flush=True)
-            time.sleep(0.2)
+class Comunication():
+    def connect(self):
+        print("connect")
+
+comunication = Comunication()
 
 sender_name = "Bonnie Blue"
 
+
 def chatroom():
-    def sender(text):
+    def sender_print(text):
         print(f"\033[34m● {sender_name} >>\033[0m {text}")
 
-    def user(text):
+    def user_print(text):
         print(f"\033[31m● You >>\033[0m {text}")
 
     messages = []
@@ -43,9 +47,9 @@ def chatroom():
         print("\033[2J\033[H", end="")
         for i in messages:
             if i["type"] == "user":
-                user(i["text"])
+                user_print(i["text"])
             elif i["type"] == "sender":
-                sender(i["text"])
+                sender_print(i["text"])
 
         print("------------------------------------------")
         text = input(">> ")
@@ -53,10 +57,24 @@ def chatroom():
         data = {"type": user_type, "text": text}
         messages.append(data)
 
+def config():
+    print("Config")
+    ip = input("IP of the server: ")
+    username = input("Your username: ")
+    data = {"ip": ip, "username":username}
+    with open("config.json", "w") as f:
+        json.dump(data, f)
 
 def main():
     booting_page()
-    connecting()
+    if not os.path.exists("config.json"):
+        print("Please before we continue do configuration:")
+        config()
+    comunication.connect()
     chatroom()
+
 if __name__ == "__main__":
-    main()
+    if "--config" in sys.argv:
+        config()
+    else:
+        main()
