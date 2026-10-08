@@ -1,5 +1,4 @@
-# LOL for now just some pretty CLI
-# Sending Love :3
+# TODO: Connect it to internet
 
 import time
 import json
@@ -57,13 +56,29 @@ def chatroom():
         data = {"type": user_type, "text": text}
         messages.append(data)
 
-def config():
-    print("Config")
-    ip = input("IP of the server: ")
-    username = input("Your username: ")
-    data = {"ip": ip, "username":username}
-    with open("config.json", "w") as f:
-        json.dump(data, f)
+class Config():
+    def load(self):
+        try:
+            with open("config.json", "r") as f:
+                data = json.load(f)
+        except:
+            open("config.json", "w").close()
+            data = {}
+
+        return data
+    
+    def save(self, data):
+        with open("config.json", "w") as f:
+            json.dump(data, f)
+
+    def basic(self):
+        print("Config")
+        ip = input("IP of the server: ")
+        username = input("Your username: ")
+        data = {"ip": ip, "username":username}
+        self.save(data)
+
+config = Config()
 
 def main():
     booting_page()
@@ -75,6 +90,6 @@ def main():
 
 if __name__ == "__main__":
     if "--config" in sys.argv:
-        config()
+        config.basic()
     else:
         main()
